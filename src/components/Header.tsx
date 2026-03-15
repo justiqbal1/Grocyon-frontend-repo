@@ -12,7 +12,7 @@ import {
 
 interface HeaderProps {
   onProfileAction: (action: "profile" | "logout" | "login") => void;
-  userRole: "admin" | "vendor";
+  userRole: "admin" | "vendor" | "user";
   userName?: string; // added prop for user name
   firstName?: string; // First name to display instead of "Vendor"
   restaurantImage?: string; // Restaurant image to display as avatar

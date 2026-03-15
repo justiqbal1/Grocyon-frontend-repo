@@ -45,6 +45,10 @@ export default function ProfilePage({ onBack }: ProfilePageProps) {
   const [formData, setFormData] = useState<Partial<ApiUser>>({});
   const hasFetchedRef = useRef(false);
 
+  // Get user role from localStorage
+  const userRole = localStorage.getItem("user_role")?.toLowerCase() || "";
+  const isUserRole = userRole === "user";
+
   // Image base URL from environment variable (only for images, not for API calls)
   const IMAGE_BASE_URL = ((import.meta.env.VITE_IMAGE_BASE_URL as string) || "https://pub-0b64f57e41ce419f8f968539ec199b1a.r2.dev").trim().replace(/\/+$/, "");
 
@@ -447,57 +451,59 @@ export default function ProfilePage({ onBack }: ProfilePageProps) {
                   )}
                 </div>
               </div>
-              <div className="flex items-start space-x-3">
-                <div className="bg-purple-50 p-2 rounded-lg">
-                  <MapPin className="w-4 h-4 text-purple-600" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Address</p>
-                  {isEditing ? (
-                    <div className="space-y-2">
-                      <input
-                        type="text"
-                        value={formData.street_address1 || ""}
-                        onChange={(e) => handleInputChange("street_address1", e.target.value)}
-                        placeholder="Street Address 1"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-sm"
-                      />
-                      <input
-                        type="text"
-                        value={formData.street_address2 || ""}
-                        onChange={(e) => handleInputChange("street_address2", e.target.value)}
-                        placeholder="Street Address 2 (Optional)"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-sm"
-                      />
-                      <div className="grid grid-cols-2 gap-2">
+              {!isUserRole && (
+                <div className="flex items-start space-x-3">
+                  <div className="bg-purple-50 p-2 rounded-lg">
+                    <MapPin className="w-4 h-4 text-purple-600" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Address</p>
+                    {isEditing ? (
+                      <div className="space-y-2">
                         <input
                           type="text"
-                          value={formData.city || ""}
-                          onChange={(e) => handleInputChange("city", e.target.value)}
-                          placeholder="City"
+                          value={formData.street_address1 || ""}
+                          onChange={(e) => handleInputChange("street_address1", e.target.value)}
+                          placeholder="Street Address 1"
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-sm"
                         />
                         <input
                           type="text"
-                          value={formData.state || ""}
-                          onChange={(e) => handleInputChange("state", e.target.value)}
-                          placeholder="State"
+                          value={formData.street_address2 || ""}
+                          onChange={(e) => handleInputChange("street_address2", e.target.value)}
+                          placeholder="Street Address 2 (Optional)"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-sm"
+                        />
+                        <div className="grid grid-cols-2 gap-2">
+                          <input
+                            type="text"
+                            value={formData.city || ""}
+                            onChange={(e) => handleInputChange("city", e.target.value)}
+                            placeholder="City"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-sm"
+                          />
+                          <input
+                            type="text"
+                            value={formData.state || ""}
+                            onChange={(e) => handleInputChange("state", e.target.value)}
+                            placeholder="State"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-sm"
+                          />
+                        </div>
+                        <input
+                          type="text"
+                          value={formData.zip_code || ""}
+                          onChange={(e) => handleInputChange("zip_code", e.target.value)}
+                          placeholder="ZIP Code"
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-sm"
                         />
                       </div>
-                      <input
-                        type="text"
-                        value={formData.zip_code || ""}
-                        onChange={(e) => handleInputChange("zip_code", e.target.value)}
-                        placeholder="ZIP Code"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-sm"
-                      />
-                    </div>
-                  ) : (
-                    <p className="text-gray-800 font-medium">{getFullAddress()}</p>
-                  )}
+                    ) : (
+                      <p className="text-gray-800 font-medium">{getFullAddress()}</p>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
 
@@ -552,41 +558,43 @@ export default function ProfilePage({ onBack }: ProfilePageProps) {
 
         {/* Right Column - Detailed Information */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Personal Information Card */}
-          <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
-            <h3 className="text-lg font-semibold text-gray-800 mb-6 flex items-center">
-              <User className="w-5 h-5 mr-2 text-red-500" />
-              Personal Information
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">First Name</label>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    value={formData.first_name || ""}
-                    onChange={(e) => handleInputChange("first_name", e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-                  />
-                ) : (
-                  <p className="text-gray-800 font-medium py-2">{profileData.first_name}</p>
-                )}
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    value={formData.last_name || ""}
-                    onChange={(e) => handleInputChange("last_name", e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-                  />
-                ) : (
-                  <p className="text-gray-800 font-medium py-2">{profileData.last_name}</p>
-                )}
+          {/* Personal Information Card - Hide for user role */}
+          {!isUserRole && (
+            <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
+              <h3 className="text-lg font-semibold text-gray-800 mb-6 flex items-center">
+                <User className="w-5 h-5 mr-2 text-red-500" />
+                Personal Information
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      value={formData.first_name || ""}
+                      onChange={(e) => handleInputChange("first_name", e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                    />
+                  ) : (
+                    <p className="text-gray-800 font-medium py-2">{profileData.first_name}</p>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      value={formData.last_name || ""}
+                      onChange={(e) => handleInputChange("last_name", e.target.value)}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                    />
+                  ) : (
+                    <p className="text-gray-800 font-medium py-2">{profileData.last_name}</p>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Business Information (for Vendors) */}
           {profileData.role_name?.toLowerCase() === "vendor" && (

@@ -62,21 +62,27 @@ import {
   PackageCheck,
 } from "lucide-react";
 import DeleteConfirmationPage from "./components/DeleteConfirmationPage";
+import DeleteAccountPage from "./components/DeleteAccountPage";
 import PrivacyPolicyPage from "./components/PrivacyPolicyPage";
 import LandingPage from "./components/LandingPage";
 
 function App() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // Initialize isAuthenticated from localStorage immediately
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    const token = localStorage.getItem("auth_token");
+    const savedRole = localStorage.getItem("user_role");
+    return !!(token && savedRole);
+  });
   const [authMode, setAuthMode] = useState<
     "login" | "signup" | "forgot-password" | "otp-verification"
   >("login");
   const [otpEmail, setOtpEmail] = useState("");
 
   // Persist userRole in localStorage
-  const [userRole, setUserRole] = useState<"admin" | "vendor">(
-    (localStorage.getItem("user_role") as "admin" | "vendor") || "admin"
+  const [userRole, setUserRole] = useState<"admin" | "vendor" | "user">(
+    (localStorage.getItem("user_role") as "admin" | "vendor" | "user") || "admin"
   );
 
   // User profile data for header
@@ -119,27 +125,61 @@ function App() {
     const savedRole = localStorage.getItem("user_role");
     if (token && savedRole) {
       setIsAuthenticated(true);
-      setUserRole(savedRole as "admin" | "vendor");
+      setUserRole(savedRole as "admin" | "vendor" | "user");
     }
   }, []);
 
   const handleLogin = () => {
+    // Get role from localStorage and update state
+    const currentRole = localStorage.getItem("user_role") as "admin" | "vendor" | "user" | null;
+    if (currentRole) {
+      setUserRole(currentRole);
+    }
     setIsAuthenticated(true);
     setAuthMode("login");
-    navigate("/dashboard");
+    // Navigate to intended path if exists, otherwise based on role
+    const intendedPath = sessionStorage.getItem("intendedPath");
+    if (intendedPath) {
+      sessionStorage.removeItem("intendedPath");
+      navigate(intendedPath);
+    } else {
+      // If user role is "user", redirect to profile, otherwise dashboard
+      if (currentRole === "user") {
+        navigate("/profile");
+      } else {
+        navigate("/dashboard");
+      }
+    }
   };
 
   const handleSignup = () => {
+    // Get role from localStorage and update state
+    const currentRole = localStorage.getItem("user_role") as "admin" | "vendor" | "user" | null;
+    if (currentRole) {
+      setUserRole(currentRole);
+    }
     setIsAuthenticated(true);
     setAuthMode("login");
-    navigate("/dashboard");
+    // Navigate to intended path if exists, otherwise based on role
+    const intendedPath = sessionStorage.getItem("intendedPath");
+    if (intendedPath) {
+      sessionStorage.removeItem("intendedPath");
+      navigate(intendedPath);
+    } else {
+      // If user role is "user", redirect to profile, otherwise dashboard
+      if (currentRole === "user") {
+        navigate("/profile");
+      } else {
+        navigate("/dashboard");
+      }
+    }
   };
 
   const handleOTPVerified = (token: string, user: any) => {
     localStorage.setItem("auth_token", token);
     const userRole = user.role.toLowerCase();
-    if (userRole === "admin" || userRole === "vendor") {
-      setUserRole(userRole as "admin" | "vendor");
+    if (userRole === "admin" || userRole === "vendor" || userRole === "user") {
+      setUserRole(userRole as "admin" | "vendor" | "user");
       localStorage.setItem("user_role", userRole);
     } else {
       console.warn(`Unexpected user role: ${user.role}, defaulting to vendor`);
@@ -148,7 +188,19 @@ function App() {
     }
     setIsAuthenticated(true);
     setAuthMode("login");
-    navigate("/dashboard");
+    // Navigate to intended path if exists, otherwise based on role
+    const intendedPath = sessionStorage.getItem("intendedPath");
+    if (intendedPath) {
+      sessionStorage.removeItem("intendedPath");
+      navigate(intendedPath);
+    } else {
+      // If user role is "user", redirect to profile, otherwise dashboard
+      if (userRole === "user") {
+        navigate("/profile");
+      } else {
+        navigate("/dashboard");
+      }
+    }
   };
 
   const handleRoleSelect = (role: "admin" | "vendor") => {
@@ -197,9 +249,13 @@ function App() {
     return <Navigate to="/admin-access" replace />;
   }
 
-  // If authenticated and on root or admin-access, redirect to dashboard
+  // If authenticated and on root or admin-access, redirect based on role
   if (isAuthenticated && (location.pathname === "/" || location.pathname === "/admin-access")) {
-    return <Navigate to="/dashboard" replace />;
+    if (userRole === "user") {
+      return <Navigate to="/profile" replace />;
+    } else {
+      return <Navigate to="/dashboard" replace />;
+    }
   }
 
   // Show authentication pages if not authenticated and on admin-access route
@@ -252,16 +308,28 @@ function App() {
     }
   }
 
+  // If not authenticated and trying to access /profile, redirect to login with intended path
+  if (!isAuthenticated && location.pathname === "/profile") {
+    sessionStorage.setItem("intendedPath", "/profile");
+    return <Navigate to="/admin-access" replace />;
+  }
+
   // If not authenticated and not on allowed routes, redirect to landing
   if (!isAuthenticated && location.pathname !== "/admin-access" && location.pathname !== "/" && location.pathname !== "/privacy-policy") {
     return <Navigate to="/" replace />;
   }
 
+  // If user role is "user" and trying to access any route other than /profile, redirect to /profile
+  if (isAuthenticated && userRole === "user" && location.pathname !== "/profile" && location.pathname !== "/deleteAccount") {
+    return <Navigate to="/profile" replace />;
+  }
+
   // Main authenticated app with routing
+
   return (
     <div className="flex h-screen bg-gray-50">
       <Sidebar
-        activeSection={location.pathname.slice(1) || "dashboard"}
+        activeSection={location.pathname.slice(1).split('/')[0] || (userRole === "user" ? "profile" : "dashboard")}
         onSectionChange={(section) => navigate(`/${section}`)}
         userRole={userRole}
         isFood={userIsFood}
@@ -355,6 +423,10 @@ function App() {
             <Route
               path="/delete-confirmation"
               element={<DeleteConfirmationPage />}
+            />
+            <Route
+              path="/deleteAccount"
+              element={<DeleteAccountPage />}
             />
             <Route
               path="/coupon"

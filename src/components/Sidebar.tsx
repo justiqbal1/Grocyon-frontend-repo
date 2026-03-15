@@ -22,7 +22,7 @@ import {
 interface SidebarProps {
   activeSection: string;
   onSectionChange: (section: string) => void;
-  userRole: "admin" | "vendor";
+  userRole: "admin" | "vendor" | "user";
   onVendorsClick?: () => void;
   isFood?: boolean; // Show Addons and Flavors only if isFood is true
 }
@@ -77,10 +77,17 @@ export default function Sidebar({
       { id: "all-orders", label: "Orders", icon: ShoppingCart },
     ];
 
+    const userOnlyItems: MenuItem[] = [
+      { id: "profile", label: "Profile", icon: UserCheck },
+    ];
+
     if (userRole === "admin") {
       return [...adminOnlyItems, ...commonItems];
-    } else {
+    } else if (userRole === "vendor") {
       return [...vendorOnlyItems, ...commonItems];
+    } else {
+      // user role
+      return [...userOnlyItems, ...commonItems];
     }
   };
 

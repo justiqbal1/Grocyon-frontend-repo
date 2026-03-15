@@ -39,9 +39,11 @@ export default function LoginPage({
 
         // Set user role and persist it
         const userRole = response.data.user.role.toLowerCase();
-        if (userRole === "admin" || userRole === "vendor") {
+        if (userRole === "admin" || userRole === "vendor" || userRole === "user") {
           localStorage.setItem("user_role", userRole); // Persist role
-          onRoleSelect(userRole as "admin" | "vendor");
+          if (userRole === "admin" || userRole === "vendor") {
+            onRoleSelect(userRole as "admin" | "vendor");
+          }
         } else {
           setError(`Unsupported user role: ${response.data.user.role}`);
           return;
