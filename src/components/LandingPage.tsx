@@ -25,6 +25,7 @@ import {
 export default function LandingPage() {
   const [activeFilter, setActiveFilter] = useState("All");
   const [showModal, setShowModal] = useState(false);
+  const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.grocyon.user.app";
 
   const categories = [
     { icon: Circle, label: "Vegetables", color: "text-green-600" },
@@ -128,17 +129,27 @@ export default function LandingPage() {
                 Home
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-red-500 group-hover:w-full transition-all duration-300"></span>
               </button>
-              <a href="#download" className="text-gray-700 hover:text-red-500 hover:font-semibold transition-all duration-300 relative group">
+              <a
+                href={PLAY_STORE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-700 hover:text-red-500 hover:font-semibold transition-all duration-300 relative group"
+              >
                 Download App
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-red-500 group-hover:w-full transition-all duration-300"></span>
               </a>
             </nav>
 
             {/* Download Button */}
-            <button className="group flex items-center space-x-2 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 hover:shadow-lg hover:shadow-red-500/50 hover:scale-105 transition-all duration-300">
+            <a
+              href={PLAY_STORE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center space-x-2 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 hover:shadow-lg hover:shadow-red-500/50 hover:scale-105 transition-all duration-300"
+            >
               <Download className="w-5 h-5 group-hover:animate-bounce" />
               <span className="hidden sm:inline">Download App</span>
-            </button>
+            </a>
           </div>
         </div>
       </header>
@@ -378,7 +389,12 @@ export default function LandingPage() {
                 your orders live and enjoy exclusive app-only deals.
               </p>
               <div className="flex flex-wrap items-center gap-4">
-                <button className="group flex items-center space-x-3 bg-white text-gray-900 px-6 py-4 rounded-lg hover:bg-gray-100 hover:shadow-xl hover:scale-105 transition-all duration-300 font-medium shadow-lg">
+                <a
+                  href={PLAY_STORE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center space-x-3 bg-white text-gray-900 px-6 py-4 rounded-lg hover:bg-gray-100 hover:shadow-xl hover:scale-105 transition-all duration-300 font-medium shadow-lg"
+                >
                   <div className="w-8 h-8 bg-black rounded flex items-center justify-center">
                     <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.96-3.24-1.44-1.56-.62-2.46-1.1-3.21-2.27C6.93 16.07 6.43 14.88 6.5 13.58c.08-1.3.67-2.43 1.95-3.04.73-.35 1.55-.5 2.33-.5.66 0 1.29.09 1.88.27 1.17.36 2.23.81 3.33 1.29.31.13.63.26.96.39.11.04.24.05.37.02.24-.05.49-.1.73-.16.14-.03.28-.04.42-.04.51.03 1 .11 1.46.32 1.39.63 2.04 1.81 2.04 3.37 0 1.04-.37 1.88-1.11 2.52-.74.64-1.65.96-2.73.96h-.23c-.53-.01-1.06-.07-1.58-.2-.99-.26-1.97-.58-2.94-.93z"/>
@@ -388,7 +404,7 @@ export default function LandingPage() {
                     <div className="text-xs text-gray-600">AVAILABLE ON</div>
                     <div className="text-base font-bold">Google Play</div>
                   </div>
-                </button>
+                </a>
                 <div className="flex items-center space-x-3 bg-black/50 backdrop-blur-sm px-4 py-2 rounded-lg border border-gray-700">
                   <div className="flex space-x-1">
                     {[...Array(5)].map((_, i) => (
@@ -480,7 +496,9 @@ export default function LandingPage() {
                 </li>
                 <li>
                   <a
-                    href="#download"
+                    href={PLAY_STORE_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-gray-600 hover:text-red-500 transition-colors"
                   >
                     Download App
@@ -589,8 +607,7 @@ export default function LandingPage() {
             <div className="flex justify-center mb-4">
               <button 
                 onClick={() => {
-                  // You can add download link here
-                  window.open('https://play.google.com/store', '_blank');
+                  window.open(PLAY_STORE_URL, "_blank");
                 }}
                 className="flex items-center justify-center space-x-2 bg-red-500 text-white px-6 py-3 rounded-lg hover:bg-red-600 transition-all duration-300 font-medium shadow-lg hover:shadow-xl"
               >
