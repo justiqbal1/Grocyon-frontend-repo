@@ -64,6 +64,7 @@ import {
 import DeleteConfirmationPage from "./components/DeleteConfirmationPage";
 import DeleteAccountPage from "./components/DeleteAccountPage";
 import PrivacyPolicyPage from "./components/PrivacyPolicyPage";
+import ContactUsPage from "./components/ContactUsPage";
 import LandingPage from "./components/LandingPage";
 
 function App() {
@@ -244,6 +245,11 @@ function App() {
     return <PrivacyPolicyPage />;
   }
 
+  // Contact page (public access)
+  if (location.pathname === "/contact-us") {
+    return <ContactUsPage />;
+  }
+
   // Redirect /login to /admin-access
   if (location.pathname === "/login") {
     return <Navigate to="/admin-access" replace />;
@@ -315,7 +321,7 @@ function App() {
   }
 
   // If not authenticated and not on allowed routes, redirect to landing
-  if (!isAuthenticated && location.pathname !== "/admin-access" && location.pathname !== "/" && location.pathname !== "/privacy-policy") {
+  if (!isAuthenticated && location.pathname !== "/admin-access" && location.pathname !== "/" && location.pathname !== "/privacy-policy" && location.pathname !== "/contact-us") {
     return <Navigate to="/" replace />;
   }
 

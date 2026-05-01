@@ -71,6 +71,21 @@ export interface ResetPasswordResponse {
   };
 }
 
+export interface ContactSubmitRequest {
+  fullName: string;
+  email: string;
+  phone: string;
+  topic: string;
+  message: string;
+}
+
+export type ContactSubmitResponse = {
+  errorCode?: number;
+  errorMessage?: string | null;
+  success?: boolean;
+  message?: string;
+};
+
 // User Interfaces
 export interface User {
   id: number;
@@ -702,6 +717,15 @@ class ApiService {
   async logout(): Promise<void> {
     localStorage.removeItem('auth_token');
     localStorage.removeItem('user_data');
+  }
+
+  async submitContact(
+    payload: ContactSubmitRequest
+  ): Promise<ContactSubmitResponse> {
+    return this.makeRequest<ContactSubmitResponse>('/contact', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
   }
 
   async requestOTP(data: RequestOTPRequest): Promise<RequestOTPResponse> {
