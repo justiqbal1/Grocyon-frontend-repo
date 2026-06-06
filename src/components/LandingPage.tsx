@@ -9,7 +9,6 @@ import {
   Facebook,
   Instagram,
   Twitter,
-  Apple,
   UtensilsCrossed,
   Coffee,
   Circle,
@@ -27,6 +26,15 @@ export default function LandingPage() {
   const [activeFilter, setActiveFilter] = useState("All");
   const [showModal, setShowModal] = useState(false);
   const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.grocyon.user.app";
+  const APP_STORE_URL = "https://apps.apple.com/pk/app/grocyon/id6760466964";
+  const storeBadgeLinkClass =
+    "inline-flex h-12 w-[144px] items-center justify-center hover:scale-105 hover:opacity-90 transition-all duration-300 shrink-0";
+  const appStoreBadgeClass = "h-full w-full object-contain";
+  const playStoreBadgeClass = "h-full w-full object-contain scale-[1.22] origin-center";
+
+  const scrollToDownload = () => {
+    document.getElementById("download")?.scrollIntoView({ behavior: "smooth" });
+  };
 
   const categories = [
     { icon: Circle, label: "Vegetables", color: "text-green-600" },
@@ -137,27 +145,25 @@ export default function LandingPage() {
                 Contact
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-red-500 group-hover:w-full transition-all duration-300"></span>
               </Link>
-              <a
-                href={PLAY_STORE_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                type="button"
+                onClick={scrollToDownload}
                 className="text-gray-700 hover:text-red-500 hover:font-semibold transition-all duration-300 relative group"
               >
                 Download App
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-red-500 group-hover:w-full transition-all duration-300"></span>
-              </a>
+              </button>
             </nav>
 
             {/* Download Button */}
-            <a
-              href={PLAY_STORE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              type="button"
+              onClick={scrollToDownload}
               className="group flex items-center space-x-2 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 hover:shadow-lg hover:shadow-red-500/50 hover:scale-105 transition-all duration-300"
             >
               <Download className="w-5 h-5 group-hover:animate-bounce" />
               <span className="hidden sm:inline">Download App</span>
-            </a>
+            </button>
           </div>
         </div>
       </header>
@@ -393,25 +399,33 @@ export default function LandingPage() {
                 <span style={{ color: '#FFE842' }}>Seamless</span> Experience
               </h2>
               <p className="text-gray-300 text-lg leading-relaxed">
-                Download the Grocyon Android app to unlock a world of convenience. Track
+                Download the Grocyon app on iOS or Android to unlock a world of convenience. Track
                 your orders live and enjoy exclusive app-only deals.
               </p>
               <div className="flex flex-wrap items-center gap-4">
                 <a
+                  href={APP_STORE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={storeBadgeLinkClass}
+                >
+                  <img
+                    src="/image/store-badges/app-store.svg"
+                    alt="Download on the App Store"
+                    className={appStoreBadgeClass}
+                  />
+                </a>
+                <a
                   href={PLAY_STORE_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex items-center space-x-3 bg-white text-gray-900 px-6 py-4 rounded-lg hover:bg-gray-100 hover:shadow-xl hover:scale-105 transition-all duration-300 font-medium shadow-lg"
+                  className={storeBadgeLinkClass}
                 >
-                  <div className="w-8 h-8 bg-black rounded flex items-center justify-center">
-                    <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.96-3.24-1.44-1.56-.62-2.46-1.1-3.21-2.27C6.93 16.07 6.43 14.88 6.5 13.58c.08-1.3.67-2.43 1.95-3.04.73-.35 1.55-.5 2.33-.5.66 0 1.29.09 1.88.27 1.17.36 2.23.81 3.33 1.29.31.13.63.26.96.39.11.04.24.05.37.02.24-.05.49-.1.73-.16.14-.03.28-.04.42-.04.51.03 1 .11 1.46.32 1.39.63 2.04 1.81 2.04 3.37 0 1.04-.37 1.88-1.11 2.52-.74.64-1.65.96-2.73.96h-.23c-.53-.01-1.06-.07-1.58-.2-.99-.26-1.97-.58-2.94-.93z"/>
-                    </svg>
-                  </div>
-                  <div className="text-left">
-                    <div className="text-xs text-gray-600">AVAILABLE ON</div>
-                    <div className="text-base font-bold">Google Play</div>
-                  </div>
+                  <img
+                    src="/image/store-badges/google-play.png"
+                    alt="Get it on Google Play"
+                    className={playStoreBadgeClass}
+                  />
                 </a>
                 <div className="flex items-center space-x-3 bg-black/50 backdrop-blur-sm px-4 py-2 rounded-lg border border-gray-700">
                   <div className="flex space-x-1">
@@ -504,12 +518,22 @@ export default function LandingPage() {
                 </li>
                 <li>
                   <a
+                    href={APP_STORE_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-gray-600 hover:text-red-500 transition-colors"
+                  >
+                    App Store (iOS)
+                  </a>
+                </li>
+                <li>
+                  <a
                     href={PLAY_STORE_URL}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-gray-600 hover:text-red-500 transition-colors"
                   >
-                    Download App
+                    Google Play (Android)
                   </a>
                 </li>
                 <li>
@@ -619,17 +643,32 @@ export default function LandingPage() {
               and enjoy your seamless shopping journey!
             </p>
 
-            {/* Download Button - Centered */}
-            <div className="flex justify-center mb-4">
-              <button 
-                onClick={() => {
-                  window.open(PLAY_STORE_URL, "_blank");
-                }}
-                className="flex items-center justify-center space-x-2 bg-red-500 text-white px-6 py-3 rounded-lg hover:bg-red-600 transition-all duration-300 font-medium shadow-lg hover:shadow-xl"
+            {/* Download Buttons - Centered */}
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-4">
+              <a
+                href={APP_STORE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={storeBadgeLinkClass}
               >
-                <Download className="w-5 h-5" />
-                <span>Download Android App</span>
-              </button>
+                <img
+                  src="/image/store-badges/app-store.svg"
+                  alt="Download on the App Store"
+                  className={appStoreBadgeClass}
+                />
+              </a>
+              <a
+                href={PLAY_STORE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={storeBadgeLinkClass}
+              >
+                <img
+                  src="/image/store-badges/google-play.png"
+                  alt="Get it on Google Play"
+                  className={playStoreBadgeClass}
+                />
+              </a>
             </div>
 
             {/* Secondary Action - Centered */}
